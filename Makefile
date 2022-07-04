@@ -1,5 +1,5 @@
 GOPATH:=$(shell go env GOPATH)
-APP?=cryptox-go
+APP?=cryptoexchange-go
 
 .PHONY: format
 ## format: format files
