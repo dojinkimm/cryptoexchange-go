@@ -8,7 +8,7 @@ format:
 
 .PHONY: test
 test:
-	@go get github.com/rakyll/gotest
+	@go install github.com/rakyll/gotest@latest
 	gotest -p 1 -race -cover -v ./...
 
 .PHONY: lint
