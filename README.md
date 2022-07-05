@@ -48,6 +48,6 @@ if err != nil {
 
 # Supported Cryptocurrency Exchanges
 
-| CryptoCurrency Exchange       | REST Supported    | Websocket Support |
-|-------------------------------|------------------ | ----------------- |
-| [Upbit](https://upbit.com/)   | Yes               | No                |
+| Cryptocurrency Exchange     | REST Supported    | Websocket Support |
+|-----------------------------|------------------ | ----------------- |
+| [Upbit](https://upbit.com/) | Yes               | No                |

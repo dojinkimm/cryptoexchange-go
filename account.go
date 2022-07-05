@@ -18,13 +18,13 @@ type Account struct {
 }
 
 var (
-	ErrUnsupportedCryptocurrencyExchange = errors.New("unsupported cryptocurrency exchange")
+	ErrUnsupportedCryptoExchange = errors.New("unsupported crypto exchange")
 )
 
 // ListAccounts fetches user's account information in cryptocurrency exchange
-func (c *DefaultClient) ListAccounts() ([]*Account, error) {
+func (c *DefaultCryptoExchangeClient) ListAccounts() ([]*Account, error) {
 	var accounts []*Account
-	if c.cryptocurrencyExchange == Upbit {
+	if c.cryptoExchange == Upbit {
 		upbitAccounts, err := c.upbitService.ListAccounts()
 		if err != nil {
 			return nil, err
@@ -62,5 +62,5 @@ func (c *DefaultClient) ListAccounts() ([]*Account, error) {
 		return accounts, nil
 	}
 
-	return nil, ErrUnsupportedCryptocurrencyExchange
+	return nil, ErrUnsupportedCryptoExchange
 }
