@@ -22,9 +22,9 @@ jobs:
           fetch-depth: 5
 
       - name: Lint
-        run: |
-          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.29.0
-          make lint
+        uses: golangci/golangci-lint-action@v3
+        with:
+          version: v1.29
 
   unit:
     name: Unit tests
