@@ -25,7 +25,7 @@ jobs:
         uses: golangci/golangci-lint-action@v3
         with:
           version: v1.29
-          args: --mod=readonly
+          args: -mod=readonly
 
   unit:
     name: Unit tests
