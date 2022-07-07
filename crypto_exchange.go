@@ -7,43 +7,44 @@ import (
 	"github.com/dojinkimm/cryptoexchange-go/service"
 )
 
-type Client interface {
+//go:generate mockgen -package=client -destination=crypto_exchange_mock.go . CryptoExchangeClient
+type CryptoExchangeClient interface {
 	ListAccounts() ([]*Account, error)
 	ListTradableMarkets() ([]*Market, error)
-	ListCurrentPriceByMarketCodes() ([]string, error)
+	ListCurrentPriceByMarketCodes([]string) ([]*MarketCurrentPrice, error)
 }
 
-type CryptoCurrencyExchange int
+type CryptoExchange int
 
 // Supported Crypto Currency Exchanges
 const (
 	// Upbit format
-	Upbit CryptoCurrencyExchange = iota + 1
+	Upbit CryptoExchange = iota + 1
 )
 
-type DefaultClient struct {
+type DefaultCryptoExchangeClient struct {
 	mu     sync.Mutex
 	client *http.Client
 
-	accessKey              string
-	secretKey              string
-	cryptocurrencyExchange CryptoCurrencyExchange
+	accessKey      string
+	secretKey      string
+	cryptoExchange CryptoExchange
 
 	upbitService *service.UpbitService
 }
 
-type Option func(*DefaultClient)
+type Option func(*DefaultCryptoExchangeClient)
 
 // NewClient returns a new http client and cryptocurrency exchange services.
 // In order to use APIs that need authentication, AccessKey and SecretKey must be provided.
-func NewClient(httpClient *http.Client, cryptocurrencyExchange CryptoCurrencyExchange, opts ...Option) (*DefaultClient, error) {
+func NewClient(httpClient *http.Client, cryptoExchange CryptoExchange, opts ...Option) (*DefaultCryptoExchangeClient, error) {
 	if httpClient == nil {
 		httpClient = &http.Client{}
 	}
 
-	client := &DefaultClient{
-		client:                 httpClient,
-		cryptocurrencyExchange: cryptocurrencyExchange,
+	client := &DefaultCryptoExchangeClient{
+		client:         httpClient,
+		cryptoExchange: cryptoExchange,
 	}
 	for _, opt := range opts {
 		opt(client)
@@ -59,19 +60,19 @@ func NewClient(httpClient *http.Client, cryptocurrencyExchange CryptoCurrencyExc
 }
 
 func WithAccessKey(accessKey string) Option {
-	return func(c *DefaultClient) {
+	return func(c *DefaultCryptoExchangeClient) {
 		c.accessKey = accessKey
 	}
 }
 
 func WithSecretKey(secretKey string) Option {
-	return func(c *DefaultClient) {
+	return func(c *DefaultCryptoExchangeClient) {
 		c.secretKey = secretKey
 	}
 }
 
 // copyHTTPClient returns the client use by DefaultClient
-func (c *DefaultClient) copyHTTPClient() *http.Client {
+func (c *DefaultCryptoExchangeClient) copyHTTPClient() *http.Client {
 	c.mu.Lock()
 	defer c.mu.Unlock()
 	copiedClient := *c.client

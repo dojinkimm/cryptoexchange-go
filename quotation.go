@@ -61,9 +61,9 @@ var (
 )
 
 // ListTradableMarkets fetches markets that can be traded in cryptocurrency exchange
-func (c *DefaultClient) ListTradableMarkets() ([]*Market, error) {
+func (c *DefaultCryptoExchangeClient) ListTradableMarkets() ([]*Market, error) {
 	var marketCodes []*Market
-	if c.cryptocurrencyExchange == Upbit {
+	if c.cryptoExchange == Upbit {
 		upbitMarketCodes, err := c.upbitService.ListMarketCodes()
 		if err != nil {
 			return nil, err
@@ -81,13 +81,13 @@ func (c *DefaultClient) ListTradableMarkets() ([]*Market, error) {
 		return marketCodes, nil
 	}
 
-	return nil, ErrUnsupportedCryptocurrencyExchange
+	return nil, ErrUnsupportedCryptoExchange
 }
 
 // ListCurrentPriceByMarketCodes fetches current price of a market by market codes
-func (c *DefaultClient) ListCurrentPriceByMarketCodes(marketCodes []string) ([]*MarketCurrentPrice, error) {
+func (c *DefaultCryptoExchangeClient) ListCurrentPriceByMarketCodes(marketCodes []string) ([]*MarketCurrentPrice, error) {
 	var marketCurrPrices []*MarketCurrentPrice
-	if c.cryptocurrencyExchange == Upbit {
+	if c.cryptoExchange == Upbit {
 		upbitCurrPrices, err := c.upbitService.ListCurrentPriceByMarketCodes(marketCodes)
 		if err != nil {
 			return nil, err
@@ -124,5 +124,5 @@ func (c *DefaultClient) ListCurrentPriceByMarketCodes(marketCodes []string) ([]*
 		return marketCurrPrices, nil
 	}
 
-	return nil, ErrUnsupportedCryptocurrencyExchange
+	return nil, ErrUnsupportedCryptoExchange
 }

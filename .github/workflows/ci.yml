@@ -1,6 +1,7 @@
 name: ci
 
 on:
+  pull_request:
   push:
     branches:
       - main
@@ -22,7 +23,7 @@ jobs:
 
       - name: Lint
         run: |
-          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.29.0
+          curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | sh -s -- -b $(go env GOPATH)/bin v1.46.2
           make lint
 
   unit:
