@@ -11,13 +11,10 @@ go get -u github.com/dojinkimm/cryptoexchange-go
 
 ### Public Information
 ```go
-cryptoClient, err := crypto_exchange.NewClient(nil, crypto_exchange.Upbit)
-if err != nil {
-    logrus.Error(err)
-}
+cryptoClient := crypto_exchange.NewClient(nil)
 
 // list current prices for given market codes
-currPrices, err := cryptoClient.ListCurrentPriceByMarketCodes([]string{"KRW-BTC", "KRW-ETH", "BTC-ETH"})
+currPrices, err := cryptoClient.UpbitService.ListCurrentPriceByMarketCodes([]string{"KRW-BTC", "KRW-ETH", "BTC-ETH"})
 if err != nil {
     logrus.Error(err)
 }
@@ -28,18 +25,14 @@ if err != nil {
 accessKey := "<--Add Your Access Key Here-->"
 secretKey := "<--Add Your Secret Key Here-->"
 
-cryptoClient, err := crypto_exchange.NewClient(
+cryptoClient := crypto_exchange.NewClient(
     nil,
-    crypto_exchange.Upbit,
     crypto_exchange.WithAccessKey(accessKey),
     crypto_exchange.WithSecretKey(secretKey),
 )
-if err != nil {
-    logrus.Error(err)
-}
 
 // list account information for given accessKey and secretKey user
-accounts, err = cryptoClient.ListAccounts()
+accounts, err := cryptoClient.UpbitService.ListAccounts()
 if err != nil {
     logrus.Error(err)
 }
@@ -51,3 +44,11 @@ if err != nil {
 | Cryptocurrency Exchange     | REST Supported    | Websocket Support |
 |-----------------------------|------------------ | ----------------- |
 | [Upbit](https://upbit.com/) | Yes               | No                |
+
+# Supported APIs
+
+| APIs                          | Upbit |
+|-------------------------------|-------|
+| List All Accounts             | ✅     |
+| List Tradable Market Codes    | ✅     |
+| Get Current Price of a Ticker | ✅     |
