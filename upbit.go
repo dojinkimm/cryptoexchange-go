@@ -1,13 +1,16 @@
 package crypto_exchange
 
 import (
+	"bytes"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"io"
 	"io/ioutil"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"github.com/sirupsen/logrus"
 )
@@ -189,6 +192,75 @@ func (s *UpbitService) ListCurrentPriceByMarketCodes(marketCodes []string) ([]Ma
 	}
 
 	return currPrices, nil
+}
+
+type OrderResp struct {
+	Uuid            string    `json:"uuid,omitempty"`
+	Side            string    `json:"side,omitempty"`
+	OrdType         string    `json:"ord_type,omitempty"`
+	Price           string    `json:"price,omitempty"`
+	AvgPrice        string    `json:"avg_price,omitempty"`
+	State           string    `json:"state,omitempty"`
+	Market          string    `json:"market,omitempty"`
+	CreatedAt       time.Time `json:"created_at,omitempty"`
+	Volume          string    `json:"volume,omitempty"`
+	RemainingVolume string    `json:"remaining_volume,omitempty"`
+	ReservedFee     string    `json:"reserved_fee,omitempty"`
+	RemainingFee    string    `json:"remaining_fee,omitempty"`
+	PaidFee         string    `json:"paid_fee,omitempty"`
+	Locked          string    `json:"locked,omitempty"`
+	ExecutedVolume  string    `json:"executed_volume,omitempty"`
+	TradesCount     int       `json:"trades_count,omitempty"`
+}
+
+func (s *UpbitService) CreateOrder(
+	marketID string,
+	side string,
+	volume string,
+	price string,
+	orderType string,
+) (*OrderResp, error) {
+	jsonPayload := []byte(fmt.Sprintf(`{"market": "%s", "side": "%s", "volume": "%s", "price": "%s", "ord_type": "%s"}`,
+		marketID,
+		side,
+		volume,
+		price,
+		orderType,
+	))
+	req, err := http.NewRequest(http.MethodPost, s.baseURL+"/v1/orders", bytes.NewBuffer(jsonPayload))
+	if err != nil {
+		return nil, err
+	}
+	str := ""
+	authHeader, err := generateAuthorizationToken(s.accessKey, s.secretKey, &str)
+	if err != nil {
+		return nil, err
+	}
+	req.Header.Add("Accept", "application/json")
+	req.Header.Add("Authorization", authHeader)
+
+	resp, err := http.DefaultClient.Do(req)
+	if resp != nil {
+		defer closeBody(resp)
+	}
+	if err != nil {
+		return nil, err
+	}
+	b, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return nil, err
+	}
+
+	if resp.StatusCode != http.StatusOK {
+		return nil, unmarshalUpbitError(b, resp.StatusCode)
+	}
+
+	var orderResp *OrderResp
+	if err := json.Unmarshal(b, orderResp); err != nil {
+		return nil, err
+	}
+
+	return orderResp, nil
 }
 
 func unmarshalUpbitError(b []byte, code int) error {
