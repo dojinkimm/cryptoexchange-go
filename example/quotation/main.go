@@ -9,12 +9,8 @@ import (
 )
 
 func main() {
-	cryptoClient, err := crypto_exchange.NewClient(nil, crypto_exchange.Upbit)
-	if err != nil {
-		logrus.Error(err)
-	}
-
-	markets, err := cryptoClient.ListTradableMarkets()
+	cryptoClient := crypto_exchange.NewClient(nil)
+	markets, err := cryptoClient.UpbitService.ListMarketCodes()
 	if err != nil {
 		logrus.Error(err)
 	}
@@ -24,7 +20,7 @@ func main() {
 		break
 	}
 
-	currPrices, err := cryptoClient.ListCurrentPriceByMarketCodes([]string{"KRW-BTC", "KRW-ETH", "BTC-ETH"})
+	currPrices, err := cryptoClient.UpbitService.ListCurrentPriceByMarketCodes([]string{"KRW-BTC", "KRW-ETH", "BTC-ETH"})
 	if err != nil {
 		logrus.Error(err)
 	}

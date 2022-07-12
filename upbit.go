@@ -1,4 +1,4 @@
-package service
+package crypto_exchange
 
 import (
 	"encoding/json"
@@ -9,46 +9,22 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/gofrs/uuid"
-	"github.com/golang-jwt/jwt/v4"
 	"github.com/sirupsen/logrus"
 )
+
+type UpbitService service
 
 const (
 	upbitBaseURL = "https://api.upbit.com"
 )
 
-type UpbitService struct {
-	client *http.Client
-
-	baseURL string
-
-	accessKey          string
-	authorizationToken string
-}
-
-func NewUpbitService(httpClient *http.Client, accessKey, secretKey string) (*UpbitService, error) {
-	claimMap := jwt.MapClaims{}
-	claimMap["access_key"] = accessKey
-
-	nonce, err := uuid.NewV4()
-	if err != nil {
-		return nil, err
-	}
-	claimMap["nonce"] = nonce
-
-	claim := jwt.NewWithClaims(jwt.SigningMethodHS256, claimMap)
-	token, err := claim.SignedString([]byte(secretKey))
-	if err != nil {
-		return nil, err
-	}
-
+func newUpbitService(httpClient *http.Client, accessKey, secretKey string) *UpbitService {
 	return &UpbitService{
-		client:             httpClient,
-		baseURL:            upbitBaseURL,
-		accessKey:          accessKey,
-		authorizationToken: "Bearer " + token,
-	}, nil
+		client:    httpClient,
+		baseURL:   upbitBaseURL,
+		accessKey: accessKey,
+		secretKey: secretKey,
+	}
 }
 
 type UpbitAccount struct {
@@ -74,8 +50,13 @@ func (s *UpbitService) ListAccounts() ([]UpbitAccount, error) {
 	if err != nil {
 		return nil, err
 	}
+
+	authToken, err := generateAuthorizationToken(s.accessKey, s.secretKey, nil)
+	if err != nil {
+		return nil, err
+	}
 	req.Header.Add("Accept", "application/json")
-	req.Header.Add("Authorization", s.authorizationToken)
+	req.Header.Add("Authorization", authToken)
 
 	resp, err := http.DefaultClient.Do(req)
 	if resp != nil {
