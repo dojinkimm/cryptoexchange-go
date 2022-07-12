@@ -169,8 +169,11 @@ const (
 	Buy  BuyOrSell = "bid"
 	Sell BuyOrSell = "ask"
 
-	Limit           OrderType = "limit"
-	MarketPriceBuy  OrderType = "price"
+	// Limit 지정가 주문
+	Limit OrderType = "limit"
+	// MarketPriceBuy 시장가 매수
+	MarketPriceBuy OrderType = "price"
+	// MarketPriceSell 시장가 매도
 	MarketPriceSell OrderType = "market"
 )
 
@@ -208,8 +211,14 @@ func (s *UpbitService) CreateOrder(
 	params.Add("ord_type", string(orderType))
 	encodedParams := params.Encode()
 
-	jsonPayload := []byte(fmt.Sprintf(`{"market": "%s","side": "%s","volume": "%s","price": "%s","ord_type": "%s"}`,
-		marketCode, string(side), fmt.Sprintf("%f", volume), fmt.Sprintf("%f", price), string(orderType)))
+	values := map[string]string{
+		"market":   params.Get("market"),
+		"side":     params.Get("side"),
+		"volume":   params.Get("volume"),
+		"price":    params.Get("price"),
+		"ord_type": params.Get("ord_type"),
+	}
+	jsonPayload, _ := json.Marshal(values)
 	req, err := http.NewRequest(http.MethodPost, s.baseURL+"/v1/orders", bytes.NewBuffer(jsonPayload))
 	if err != nil {
 		return nil, err

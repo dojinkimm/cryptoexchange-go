@@ -3,7 +3,6 @@ package crypto_exchange
 import (
 	"crypto/sha512"
 	"encoding/hex"
-	"fmt"
 
 	"github.com/gofrs/uuid"
 	"github.com/golang-jwt/jwt/v4"
@@ -22,7 +21,6 @@ func generateAuthorizationToken(accessKey, secretKey string, query *string) (str
 		hash := sha512.New()
 		hash.Write([]byte(*query))
 		hashedQuery := hex.EncodeToString(hash.Sum(nil))
-		fmt.Println(hashedQuery)
 
 		claimMap["query_hash"] = hashedQuery
 		claimMap["query_hash_alg"] = "SHA512"

@@ -52,3 +52,4 @@ if err != nil {
 | List All Accounts             | ✅     |
 | List Tradable Market Codes    | ✅     |
 | Get Current Price of a Ticker | ✅     |
+| Order                         | ✅     |
