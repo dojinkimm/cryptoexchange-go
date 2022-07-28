@@ -155,7 +155,7 @@ func (s *UpbitService) ListCurrentPriceByMarketCodes(marketCodes []string) ([]Ma
 	}
 
 	var currPrices []MarketCurrentPrice
-	if err := json.Unmarshal(resp, currPrices); err != nil {
+	if err := json.Unmarshal(resp, &currPrices); err != nil {
 		return nil, err
 	}
 
