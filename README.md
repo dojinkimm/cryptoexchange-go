@@ -47,9 +47,9 @@ if err != nil {
 
 # Supported APIs
 
-| APIs                          | Upbit |
-|-------------------------------|-------|
-| List All Accounts             | ✅     |
-| List Tradable Market Codes    | ✅     |
-| Get Current Price of a Ticker | ✅     |
-| Order                         | ✅     |
+| APIs                             | Upbit |
+|----------------------------------|-------|
+| List All Accounts                | ✅     |
+| List Tradable Market Codes       | ✅     |
+| Get Current Price of Market Code | ✅     |
+| Order                            | ✅     |

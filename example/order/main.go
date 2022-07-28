@@ -18,7 +18,7 @@ func main() {
 		crypto_exchange.WithSecretKey(secretKey),
 	)
 
-	order, err := cryptoClient.UpbitService.CreateOrder("KRW-SOL", crypto_exchange.Buy, 1, 40000, crypto_exchange.Limit)
+	order, err := cryptoClient.UpbitService.CreateOrder("KRW-SOL", crypto_exchange.Buy, 1.000000, 40000.000000, crypto_exchange.Limit)
 	if err != nil {
 		logrus.Error(err)
 	}

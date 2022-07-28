@@ -210,6 +210,7 @@ func (s *UpbitService) CreateOrder(
 	params.Add("price", fmt.Sprintf("%f", price))
 	params.Add("ord_type", string(orderType))
 	encodedParams := params.Encode()
+	// TODO - fix query param inappropriately encoded issue
 
 	values := map[string]string{
 		"market":   params.Get("market"),

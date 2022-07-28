@@ -8,7 +8,7 @@ import (
 	"github.com/golang-jwt/jwt/v4"
 )
 
-func generateAuthorizationToken(accessKey, secretKey string, query *string) (string, error) {
+func generateAuthorizationToken(accessKey, secretKey string, q *string) (string, error) {
 	claimMap := jwt.MapClaims{}
 	claimMap["access_key"] = accessKey
 
@@ -17,9 +17,9 @@ func generateAuthorizationToken(accessKey, secretKey string, query *string) (str
 		return "", err
 	}
 	claimMap["nonce"] = nonce
-	if query != nil {
+	if q != nil {
 		hash := sha512.New()
-		hash.Write([]byte(*query))
+		hash.Write([]byte(*q))
 		hashedQuery := hex.EncodeToString(hash.Sum(nil))
 
 		claimMap["query_hash"] = hashedQuery
