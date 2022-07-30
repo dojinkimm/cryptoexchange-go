@@ -2,13 +2,13 @@ package crypto_exchange
 
 import (
 	"crypto/sha512"
-	"encoding/base64"
+	"encoding/hex"
 
 	"github.com/gofrs/uuid"
 	"github.com/golang-jwt/jwt/v4"
 )
 
-func generateAuthorizationToken(accessKey, secretKey string, query *string) (string, error) {
+func generateAuthorizationToken(accessKey, secretKey string, q *string) (string, error) {
 	claimMap := jwt.MapClaims{}
 	claimMap["access_key"] = accessKey
 
@@ -17,10 +17,10 @@ func generateAuthorizationToken(accessKey, secretKey string, query *string) (str
 		return "", err
 	}
 	claimMap["nonce"] = nonce
-	if query != nil {
+	if q != nil {
 		hash := sha512.New()
-		hash.Write([]byte(*query))
-		hashedQuery := base64.URLEncoding.EncodeToString(hash.Sum(nil))
+		hash.Write([]byte(*q))
+		hashedQuery := hex.EncodeToString(hash.Sum(nil))
 
 		claimMap["query_hash"] = hashedQuery
 		claimMap["query_hash_alg"] = "SHA512"
